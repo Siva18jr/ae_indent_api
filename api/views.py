@@ -60,13 +60,13 @@ def getRoutes(request):
             'Endpoint': '/outletproducts/',
             'method': 'GET',
             'body': None,
-            'description': 'Returns an array of outlets'
+            'description': 'Returns an array of outlet products'
         },
         {
-            'Endpoint': '/outletproduct/',
+            'Endpoint': '/outletproducts/',
             'method': 'POST',
             'body': {'body': ""},
-            'description': 'Creates new outlet with data sent in post request'
+            'description': 'Creates new product for outlet with data sent in post request'
         },
         {
             'Endpoint': '/outletproducts/id/',
@@ -74,7 +74,80 @@ def getRoutes(request):
             'body': {'body': ""},
             'description': 'Creates an existing outlet with data sent in post request'
         },
+        {
+            'Endpoint': '/outletproducts/id/',
+            'method': 'DELETE',
+            'body': None,
+            'description': 'Deletes and exiting outlet product'
+        },
+        {
+            'Endpoint': '/saleproducts/',
+            'method': 'GET',
+            'body': None,
+            'description': 'Returns an array of sale products'
+        },
+        {
+            'Endpoint': '/saleproducts/',
+            'method': 'POST',
+            'body': {'body': ""},
+            'description': 'Creates new product for sales with data sent in post request'
+        },
+                {
+            'Endpoint': '/saleproducts/id/',
+            'method': 'PUT',
+            'body': {'body': ""},
+            'description': 'Creates an existing sale with data sent in post request'
+        },
+        {
+            'Endpoint': '/auth/',
+            'method': 'GET',
+            'body': {'parms': ""},
+            'description': 'Check the user'
+        },
+        {
+            'Endpoint': '/auth/',
+            'method': 'POST',
+            'body': {'body': ""},
+            'description': 'Creates an new account'
+        },
+        {
+            'Endpoint': '/verify/',
+            'method': 'GET',
+            'body': {'body': ""},
+            'description': 'Verify the email exists'
+        },
+        {
+            'Endpoint': '/otp/',
+            'method': 'GET',
+            'body': {'body': ""},
+            'description': 'Get the email otp sent to the user'
+        },
+        {
+            'Endpoint': '/categories/',
+            'method': 'GET',
+            'body': None,
+            'description': 'Returns an array of categories'
+        },
+        {
+            'Endpoint': '/remainingproducts/',
+            'method': 'GET',
+            'body': None,
+            'description': 'Returns an array of remainingproducts'
+        },
+        {
+            'Endpoint': '/remainingproducts/',
+            'method': 'POST',
+            'body': {'body': ""},
+            'description': 'Creates new remaining products with data sent in post request'
+        },
+                {
+            'Endpoint': '/remainingproducts/id/',
+            'method': 'PUT',
+            'body': {'body': ""},
+            'description': 'Creates an existing remaining products with data sent in post request'
+        }
     ]
+    
     return Response(routes)
 
 @api_view(['GET', 'POST'])
@@ -110,7 +183,7 @@ def getProducts(request):
         return addProduct(request)
     
 
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['PUT', 'DELETE'])
 def getproduct(request, pk):
 
     if request.method == 'PUT':
@@ -124,27 +197,37 @@ def getproduct(request, pk):
 def getOutletProducts(request):
 
     if request.method == 'GET':
-        return getOutletProducts(request)
-    
+        return getOutletProductsList(request)
+
     if request.method == 'POST':
         return addOutletProduct(request)
     
 
-@api_view(['PUT'])
+@api_view(['PUT', 'DELETE'])
 def getOutletproduct(request, pk):
 
     if request.method == 'PUT':
         return updateOutletProduct(request, pk)
+    
+    if request.method == 'DELETE':
+        return deleteOutletProduct(request, pk)
     
 
 @api_view(['GET', 'POST'])
 def getSaleProducts(request):
 
     if request.method == 'GET':
-        return getSaleProducts(request)
+        return getSaleProductsList(request)
     
     if request.method == 'POST':
         return addSaleProduct(request)
+    
+
+@api_view(['PUT'])
+def getSaleproduct(request, pk):
+
+    if request.method == 'PUT':
+        return updateSaleProduct(request, pk)
     
 
 @api_view(['POST', 'GET'])
@@ -169,3 +252,27 @@ def otp(request):
 
     if request.method == 'GET':
         return sendOtp(request)
+    
+
+@api_view(['GET'])
+def getCategory(request):
+
+    if request.method == 'GET':
+        return getCategories(request)
+    
+
+@api_view(['GET', 'POST'])
+def getRemainingProducts(request):
+
+    if request.method == 'GET':
+        return getRemainingProductsList(request)
+    
+    if request.method == 'POST':
+        return addRemainingProduct(request)
+    
+
+@api_view(['PUT'])
+def getRemainingproduct(request, pk):
+
+    if request.method == 'PUT':
+        return updateRemainingProduct(request, pk)

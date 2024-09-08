@@ -1,5 +1,5 @@
-from .models import Outlet, Product, OutletProducts, SaleProducts, Users
-from .serializers import OutletSerializer, ProductSerializer, OutletProductsSerializer, SaleProductsSerializer, UserSerializer
+from .models import Outlets, Product, OutletProducts, SaleProducts, Users, RemainingProducts
+from .serializers import OutletSerializer, ProductSerializer, OutletProductsSerializer, SaleProductsSerializer, UserSerializer, CategorySerializer, RemainingProductsSerializer
 from rest_framework.response import Response
 from django.http import QueryDict
 from rest_framework import status
@@ -16,7 +16,7 @@ def getOutletList(request):
     
     # order_id = request.query_params.get('order_id')
     # request.query_params['testData']
-    outlets = Outlet.objects.all()
+    outlets = Outlets.objects.all()
     serializer = OutletSerializer(outlets, many=True)
 
     return Response({
@@ -26,7 +26,7 @@ def getOutletList(request):
 
 def getOutletDetail(request, pk):
     
-    outlet = Outlet.objects.get(id=pk)
+    outlet = Outlets.objects.get(id=pk)
     serializer = OutletSerializer(outlet, many=False)
     
     return Response(serializer.data)
@@ -56,7 +56,7 @@ def updateOutlet(request, pk):
     # request.data.get('name')
 
     data = request.data
-    outlet = Outlet.objects.get(id=pk)
+    outlet = Outlets.objects.get(id=pk)
     serializer = OutletSerializer(instance=outlet, data=data)
 
     if serializer.is_valid():
@@ -64,19 +64,20 @@ def updateOutlet(request, pk):
         return Response({
             'status' : True,
             'data' : serializer.data,
-            'message' : 'Outlet data not updated'
+            'message' : 'Outlet data updated'
         })
     else:
+        print(serializer.errors)
         return Response({
             'status' : False,
             'data' : serializer.data,
-            'message' : 'outlet data updated'
+            'message' : 'Outlet data not updated'
         })
     
 
 def deleteOutlet(request, pk):
 
-    outlet = Outlet.objects.get(id=pk)
+    outlet = Outlets.objects.get(id=pk)
     outlet.delete()
 
     return Response({
@@ -127,20 +128,21 @@ def updateProduct(request, pk):
         return Response({
             'status' : True,
             'data' : serializer.data,
-            'message' : 'Product data not updated'
+            'message' : 'Product data updated'
         })
     else:
+        print(serializer.errors)
         return Response({
             'status' : False,
             'data' : serializer.data,
-            'message' : 'Product data updated'
+            'message' : 'Product data not updated'
         })
     
 
 def deleteProduct(request, pk):
 
-    outlet = Product.objects.get(id=pk)
-    outlet.delete()
+    product = Product.objects.get(id=pk)
+    product.delete()
 
     return Response({
         'status' : True,
@@ -148,10 +150,10 @@ def deleteProduct(request, pk):
     })
 
     
-def getOutletProducts(request):
+def getOutletProductsList(request):
 
     outlets = OutletProducts.objects.all()
-    serializer = OutletSerializer(outlets, many=True)
+    serializer = OutletProductsSerializer(outlets, many=True)
 
     return Response({
         'data' : serializer.data,
@@ -191,20 +193,32 @@ def updateOutletProduct(request, pk):
         return Response({
             'status' : True,
             'data' : serializer.data,
-            'message' : 'Product data not updated'
+            'message' : 'Product data updated'
         })
     else:
+        print(serializer.errors)
         return Response({
             'status' : False,
             'data' : serializer.data,
-            'message' : 'Product data updated'
+            'message' : 'Product data not updated'
         })
     
 
-def getSaleProducts(request):
+def deleteOutletProduct(request, pk):
 
-    outlets = SaleProducts.objects.all()
-    serializer = OutletSerializer(outlets, many=True)
+    product = OutletProducts.objects.get(id=pk)
+    product.delete()
+
+    return Response({
+        'status' : True,
+        'message' : 'Product was deleted!'
+    })
+    
+
+def getSaleProductsList(request):
+
+    products = SaleProducts.objects.all()
+    serializer = OutletSerializer(products, many=True)
 
     return Response({
         'data' : serializer.data,
@@ -228,6 +242,83 @@ def addSaleProduct(request):
             'status' : False,
             'data' : serializer.data,
             'message' : 'Product not Updated'
+        })
+    
+
+def updateSaleProduct(request, pk):
+
+    # request.data.get('name')
+
+    data = request.data
+    sale = SaleProducts.objects.get(id=pk)
+    serializer = SaleProductsSerializer(instance=sale, data=data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response({
+            'status' : True,
+            'data' : serializer.data,
+            'message' : 'Product data updated'
+        })
+    else:
+        print(serializer.errors)
+        return Response({
+            'status' : False,
+            'data' : serializer.data,
+            'message' : 'Product data not updated'
+        })
+    
+def getRemainingProductsList(request):
+
+    products = RemainingProducts.objects.all()
+    serializer = RemainingProductsSerializer(products, many=True)
+
+    return Response({
+        'data' : serializer.data,
+        'status' : status.HTTP_201_CREATED
+    })
+
+
+def addRemainingProduct(request):
+    
+    serializer = RemainingProductsSerializer(data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response({
+            'status' : True,
+            'data' : serializer.data,
+            'message' : 'Remaining Product Updated'
+        })
+    else:
+        return Response({
+            'status' : False,
+            'data' : serializer.data,
+            'message' : 'Remaining Product Updated'
+        })
+    
+
+def updateRemainingProduct(request, pk):
+
+    # request.data.get('name')
+
+    data = request.data
+    sale = RemainingProducts.objects.get(id=pk)
+    serializer = RemainingProductsSerializer(instance=sale, data=data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response({
+            'status' : True,
+            'data' : serializer.data,
+            'message' : 'Product data updated'
+        })
+    else:
+        print(serializer.errors)
+        return Response({
+            'status' : False,
+            'data' : serializer.data,
+            'message' : 'Product data not updated'
         })
     
 
@@ -319,3 +410,14 @@ def sendOtp(request):
             'data' : 0,
             'message' : 'Email not Sent'
         })
+    
+
+def getCategories(request):
+
+    products = Product.objects.all()
+    serializer = CategorySerializer(products, many=True)
+
+    return Response({
+        'data' : serializer.data,
+        'status' : status.HTTP_201_CREATED
+    })

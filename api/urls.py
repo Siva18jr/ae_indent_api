@@ -10,7 +10,11 @@ urlpatterns = [
     path('outletproducts/', views.getOutletProducts, name='outlet products'),
     path('outletproduct/<int:pk>/', views.getOutletproduct, name='outlet product'),
     path('saleproducts/', views.getSaleProducts, name='sale products'),
+    path('saleproduct/<int:pk>/', views.getSaleproduct, name='sale product'),
     path('auth/', views.auth, name='auth'),
     path('verify/', views.verification, name='verification'),
-    path('otp/', views.otp, name='otp')
+    path('otp/', views.otp, name='otp'),
+    path('categories/', views.getCategory, name='categories'),
+    path('remainingproducts/', views.getRemainingProducts, name='remaining products'),
+    path('remainingproduct/<int:pk>/', views.getRemainingproduct, name='remaining product'),
 ]

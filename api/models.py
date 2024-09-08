@@ -4,6 +4,7 @@ class Product(models.Model):
     name = models.CharField(max_length=50, null=False, blank=False)
     price = models.CharField(max_length=50, null=False, blank=False)
     details = models.CharField(max_length=255, null=False, blank=False)
+    category = models.CharField(max_length=50, null=False, blank=False)
     image = models.ImageField()
     updated = models.DateTimeField(auto_now=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, blank=True)
@@ -20,7 +21,7 @@ class Product(models.Model):
         return url
 
 
-class Outlet(models.Model):
+class Outlets(models.Model):
     name = models.CharField(max_length=50, null=False, blank=False)
     location = models.CharField(max_length=50, null=False, blank=False)
     number = models.CharField(max_length=12, null=False, blank=False)
@@ -38,17 +39,28 @@ class OutletProducts(models.Model):
     product_name = models.CharField(max_length=50, null=False, blank=False)
     product_price = models.CharField(max_length=50, null=False, blank=False)
     product_details = models.CharField(max_length=255, null=False, blank=False)
-    outlet_name = models.CharField(max_length=50, null=False, blank=False)
-    outlet_location = models.CharField(max_length=50, null=False, blank=False)
-    outlet_number = models.CharField(max_length=12, null=False, blank=False)
-    outlet_store_id = models.CharField(max_length=20, null=False, blank=False)
-    cash_in_hand = models.CharField(max_length=20, null=False, blank=False)
-    outstanding_balance = models.CharField(max_length=20, null=False, blank=False)
+    product_category = models.CharField(max_length=50, null=False, blank=False)
+    date = models.CharField(max_length=50, null=False, blank=False)
     updated = models.DateTimeField(auto_now=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, blank=True)
 
     def __str__(self):
-        return f"{self.outlet_name} {self.shift}"
+        return f"{self.product_name} {self.shift}"
+    
+
+class RemainingProducts(models.Model):
+    shift = models.IntegerField(null=False, blank=False)
+    image_url = models.CharField(max_length=255)
+    product_name = models.CharField(max_length=50, null=False, blank=False)
+    product_price = models.CharField(max_length=50, null=False, blank=False)
+    product_details = models.CharField(max_length=255, null=False, blank=False)
+    product_category = models.CharField(max_length=50, null=False, blank=False)
+    date = models.CharField(max_length=50, null=False, blank=False)
+    updated = models.DateTimeField(auto_now=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True, blank=True)
+
+    def __str__(self):
+        return f"{self.product_name} {self.shift}"
     
 
 class SaleProducts(models.Model):
@@ -56,12 +68,17 @@ class SaleProducts(models.Model):
     price = models.CharField(max_length=50, null=False, blank=False)
     details = models.CharField(max_length=255, null=False, blank=False)
     image_url = models.CharField(max_length=255)
+    date = models.CharField(max_length=50, null=False, blank=False)
+    outlet_name = models.CharField(max_length=50, null=False, blank=False)
+    outlet_location = models.CharField(max_length=50, null=False, blank=False)
+    outlet_number = models.CharField(max_length=12, null=False, blank=False)
+    outlet_store_id = models.CharField(max_length=20, null=False, blank=False)
     shift = models.IntegerField(null=False, blank=False)
     updated = models.DateTimeField(auto_now=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, blank=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.outlet_name} {self.shift}"
     
 
 class Users(models.Model):
