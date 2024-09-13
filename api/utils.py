@@ -14,8 +14,6 @@ def random_with_N_digits(n):
 
 def getOutletList(request):
     
-    # order_id = request.query_params.get('order_id')
-    # request.query_params['testData']
     outlets = Outlets.objects.all()
     serializer = OutletSerializer(outlets, many=True)
 
@@ -218,7 +216,7 @@ def deleteOutletProduct(request, pk):
 def getSaleProductsList(request):
 
     products = SaleProducts.objects.all()
-    serializer = OutletSerializer(products, many=True)
+    serializer = SaleProductsSerializer(products, many=True)
 
     return Response({
         'data' : serializer.data,
@@ -270,8 +268,10 @@ def updateSaleProduct(request, pk):
     
 def getRemainingProductsList(request):
 
-    products = RemainingProducts.objects.all()
-    serializer = RemainingProductsSerializer(products, many=True)
+    date = request.query_params.get('date')
+
+    products = RemainingProducts.objects.filter(date=date)
+    serializer = RemainingProductsSerializer(instance=products, many=True)
 
     return Response({
         'data' : serializer.data,
@@ -416,6 +416,21 @@ def getCategories(request):
 
     products = Product.objects.all()
     serializer = CategorySerializer(products, many=True)
+
+    categories = [data.get("category") for data in serializer.data]
+
+    return Response({
+        'data' : categories,
+        'status' : status.HTTP_201_CREATED
+    })
+
+
+def getSalesFilter(request):
+
+    date = request.query_params.get('date')
+
+    sales = SaleProducts.objects.filter(date=date)
+    serializer = SaleProductsSerializer(instance=sales, many=True)
 
     return Response({
         'data' : serializer.data,

@@ -276,3 +276,10 @@ def getRemainingproduct(request, pk):
 
     if request.method == 'PUT':
         return updateRemainingProduct(request, pk)
+    
+
+@api_view(['GET'])
+def getFilteredSales(request):
+
+    if request.method == 'GET':
+        return getSalesFilter(request)
