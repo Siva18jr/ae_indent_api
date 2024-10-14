@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-jn(s8=hp15i1gp90-++a1%v241$@9bqc0s7m3@$xb@h_s=&eht"
+SECRET_KEY = "django-insecure-st4)v%n@lhm5yml!&hglv%a&d2x=()7&1jpcm-*mktdygve9tn"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,7 +40,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "ae_indent.urls"
+ROOT_URLCONF = "ae_indent_api.urls"
 
 TEMPLATES = [
     {
@@ -58,7 +58,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "ae_indent.wsgi.application"
+WSGI_APPLICATION = "ae_indent_api.wsgi.application"
 
 
 # Database
