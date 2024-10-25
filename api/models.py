@@ -45,6 +45,7 @@ class OutletProducts(models.Model):
     quantity = models.CharField(max_length=20, null=True, blank=False)
     date = models.CharField(max_length=50, null=False, blank=False)
     total_product_price = models.CharField(max_length=50, null=True, blank=False)
+    max_quantity = models.CharField(max_length=20, null=True, blank=False, default='1')
     updated = models.DateTimeField(auto_now=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, blank=True)
 
@@ -63,6 +64,7 @@ class RemainingProducts(models.Model):
     date = models.CharField(max_length=50, null=False, blank=False)
     total_product_price = models.CharField(max_length=50, null=True, blank=False)
     quantity = models.CharField(max_length=20, null=True, blank=False)
+    max_quantity = models.CharField(max_length=20, null=True, blank=False, default='1')
     updated = models.DateTimeField(auto_now=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, blank=True)
 

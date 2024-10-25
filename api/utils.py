@@ -92,23 +92,32 @@ def getProductList(request):
 
 
 def addProduct(request):
-    
-    serializer = ProductSerializer(data=request.data)
 
-    if serializer.is_valid():
-        serializer.save()
-        return Response({
-            'status' : True,
-            'data' : serializer.data,
-            'message' : 'New Product Added'
-        })
-    else:
+    name = request.data['name']
+
+    if Product.objects.filter(name=name).exists() is True:
         return Response({
             'status' : False,
-            'data' : serializer.data,
-            'message' : 'Product not added'
+            'data' : {},
+            'message' : 'Product already exists'
         })
-    
+    else:
+        serializer = ProductSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                'status' : True,
+                'data' : serializer.data,
+                'message' : 'New Product Added'
+            })
+        else:
+            return Response({
+                'status' : False,
+                'data' : serializer.data,
+                'message' : 'Product not added'
+            })    
+   
 
 def updateProduct(request, pk):
 
@@ -155,25 +164,64 @@ def getOutletProductsList(request):
 
 
 def addOutletProduct(request):
-    
-    serializer = OutletProductsSerializer(data=request.data)
-    remaining = RemainingProductsSerializer(data=request.data)
 
-    if serializer.is_valid():
-        serializer.save()
-        if remaining.is_valid():
-            remaining.save()
-        return Response({
-            'status' : True,
-            'data' : serializer.data,
-            'message' : 'New Product Added'
-        })
+    name = request.data['product_name']
+    shift = request.data['shift']
+    date = request.data['date']
+
+    if OutletProducts.objects.filter(product_name=name,date=date, shift=shift).exists() is True:
+      
+        outletProducts = OutletProducts.objects.get(product_name=name)
+        serializer = OutletProductsSerializer(outletProducts, many=False)
+      
+        data = {
+            'product_id': request.data['product_id'], 
+            'shift': shift, 
+            'image_url': request.data['image_url'], 
+            'product_name': request.data['product_name'], 
+            'product_price': request.data['product_price'], 
+            'product_details': request.data['product_details'], 
+            'product_category': request.data['product_category'], 
+            'quantity': (int(serializer.data['quantity']) + int(request.data['quantity'])), 
+            'date': date,
+            'max_quantity' : (int(serializer.data['quantity']) + int(request.data['quantity']))
+        }
+
+        updateSerializer = OutletProductsSerializer(instance=outletProducts, data=data)
+
+        if updateSerializer.is_valid():
+            updateSerializer.save()
+            return Response({
+                'status' : True,
+                'data' : serializer.data,
+                'message' : 'Product data updated'
+            })
+        else:
+            print(serializer.errors)
+            return Response({
+                'status' : False,
+                'data' : serializer.data,
+                'message' : 'Product data not updated'
+            })
+
     else:
-        return Response({
-            'status' : False,
-            'data' : serializer.data,
-            'message' : 'Product not added'
-        })
+        serializer = OutletProductsSerializer(data=request.data)
+        remaining = RemainingProductsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            if remaining.is_valid():
+                remaining.save()
+            return Response({
+                'status' : True,
+                'data' : serializer.data,
+                'message' : 'New Product Added'
+            })
+        else:
+            return Response({
+                'status' : False,
+                'data' : serializer.data,
+                'message' : 'Product not added'
+            })
     
 
 def getOutletProductsListByCategory(request):
