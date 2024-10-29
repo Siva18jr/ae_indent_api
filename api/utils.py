@@ -30,22 +30,31 @@ def getOutletDetail(request, pk):
 
 
 def createOutlet(request):
-    
-    serializer = OutletSerializer(data=request.data)
 
-    if serializer.is_valid():
-        serializer.save()
-        return Response({
-            'status' : True,
-            'data' : serializer.data,
-            'message' : 'New outlet created'
-        })
-    else:
+    storeId = request.data['storeId']
+
+    if Outlets.objects.filter(storeId=storeId).exists() is True:
         return Response({
             'status' : False,
-            'data' : serializer.data,
-            'message' : 'Outlet not created'
+            'data' : {},
+            'message' : 'Store Id already exists'
         })
+    else:
+        serializer = OutletSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                'status' : True,
+                'data' : serializer.data,
+                'message' : 'New outlet created'
+            })
+        else:
+            return Response({
+                'status' : False,
+                'data' : serializer.data,
+                'message' : 'Outlet not created'
+            })
     
 
 def updateOutlet(request, pk):
