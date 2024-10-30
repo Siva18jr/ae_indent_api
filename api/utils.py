@@ -600,8 +600,10 @@ def getOutletProductsCategories(request):
 def getSalesDetails(request):
 
     outlet = request.query_params.get('outlet')
+    shift = request.query_params.get('shift')
+    date = request.query_params.get('date')
 
-    sales = SaleProducts.objects.filter(outlet_name= outlet)
+    sales = SaleProducts.objects.filter(outlet_name=outlet, shift=shift, date=date)
     serializer = SaleProductsSerializer(instance=sales, many=True)
 
     return Response({
