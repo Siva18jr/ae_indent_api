@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .emails import sendOtpViaEmail
 from random import randint
+import json
 
 def random_with_N_digits(n):
     range_start = 10**(n-1)
@@ -178,14 +179,15 @@ def addOutletProduct(request):
     shift = request.data['shift']
     date = request.data['date']
 
-    if OutletProducts.objects.filter(product_name=name,date=date, shift=shift).exists() is True:
+    if OutletProducts.objects.filter(product_name=name, date=date, shift=shift).exists() is True:
       
-        outletProducts = OutletProducts.objects.get(product_name=name)
+        outletProducts = OutletProducts.objects.get(product_name=name, date=date, shift=shift)
+        remaining = RemainingProducts.objects.get(product_name=name, date=date, shift=shift)
         serializer = OutletProductsSerializer(outletProducts, many=False)
       
         data = {
             'product_id': request.data['product_id'], 
-            'shift': shift, 
+            'shift': shift,
             'image_url': request.data['image_url'], 
             'product_name': request.data['product_name'], 
             'product_price': request.data['product_price'], 
@@ -197,19 +199,21 @@ def addOutletProduct(request):
         }
 
         updateSerializer = OutletProductsSerializer(instance=outletProducts, data=data)
+        updateremaining = RemainingProductsSerializer(instance=remaining, data=data)
 
         if updateSerializer.is_valid():
             updateSerializer.save()
+            if updateremaining.is_valid():
+                updateremaining.save()
             return Response({
                 'status' : True,
-                'data' : serializer.data,
+                'data' : updateSerializer.data,
                 'message' : 'Product data updated'
             })
         else:
-            print(serializer.errors)
             return Response({
                 'status' : False,
-                'data' : serializer.data,
+                'data' : updateSerializer.data,
                 'message' : 'Product data not updated'
             })
 
@@ -308,13 +312,45 @@ def addSaleProduct(request):
     serializer = SaleProductsSerializer(data=data)
 
     if serializer.is_valid():
+        
         serializer.save()
+        
+        productDetails = request.data['product_details']
+
+        productData = json.loads(productDetails)
+
+        for item in productData:
+
+            remainingQuantity = (int(item['max_quantity']) - int(item['quantity']))
+
+            remainingProductData = {
+                "id" : item['id'],
+                "product_id" : item['product_id'],
+                "shift": item['shift'],
+                "image_url": item['image_url'],
+                "product_name": item['product_name'],
+                "product_price": item['product_price'],
+                "product_details": item['product_details'],
+                "product_category": item['product_category'],
+                "date": item['date'],
+                "total_product_price" : remainingQuantity * int(item['product_price']),
+                "quantity": remainingQuantity,
+                "max_quantity" : item['quantity']
+            }
+        
+            remaining = RemainingProducts.objects.get(id=item["id"])
+            remainingProductsSerializer = RemainingProductsSerializer(instance=remaining, data=remainingProductData)
+
+            if remainingProductsSerializer.is_valid():
+                remainingProductsSerializer.save()
+
         return Response({
             'status' : True,
             'data' : serializer.data,
             'message' : 'New Product Updated'
         })
     else:
+        print(serializer.errors)
         return Response({
             'status' : False,
             'data' : serializer.data,
@@ -600,10 +636,11 @@ def getOutletProductsCategories(request):
 def getSalesDetails(request):
 
     outlet = request.query_params.get('outlet')
-    shift = request.query_params.get('shift')
-    date = request.query_params.get('date')
+    # shift = request.query_params.get('shift')
+    # date = request.query_params.get('date')
 
-    sales = SaleProducts.objects.filter(outlet_name=outlet, shift=shift, date=date)
+    # sales = SaleProducts.objects.filter(outlet_name=outlet, shift=shift, date=date)
+    sales = SaleProducts.objects.filter(outlet_name=outlet)
     serializer = SaleProductsSerializer(instance=sales, many=True)
 
     return Response({
