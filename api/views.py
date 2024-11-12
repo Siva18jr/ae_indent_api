@@ -304,3 +304,10 @@ def getSalesDetail(request):
 
     if request.method == 'GET':
         return getSalesDetails(request)
+    
+
+@api_view(['GET'])
+def salesProductDetails(request):
+
+    if request.method == 'GET':
+        return getSalesProductDetails(request)

@@ -541,7 +541,7 @@ def login(request):
             })
         else:
             return Response({
-                'status' : True,
+                'status' : False,
                 'data' : { },
                 'message' : 'Wrong crendential'
             })
@@ -636,14 +636,32 @@ def getOutletProductsCategories(request):
 def getSalesDetails(request):
 
     outlet = request.query_params.get('outlet')
-    # shift = request.query_params.get('shift')
-    # date = request.query_params.get('date')
 
-    # sales = SaleProducts.objects.filter(outlet_name=outlet, shift=shift, date=date)
     sales = SaleProducts.objects.filter(outlet_name=outlet)
     serializer = SaleProductsSerializer(instance=sales, many=True)
 
     return Response({
         'data' : serializer.data,
+        'status' : status.HTTP_201_CREATED
+    })
+
+
+def getSalesProductDetails(request):
+
+    outlet = request.query_params.get('outlet')
+    shift = request.query_params.get('shift')
+    date = request.query_params.get('date')
+
+    sales = SaleProducts.objects.filter(outlet_name=outlet, shift=shift, date=date)
+    serializer = SaleProductsSerializer(instance=sales, many=True)
+
+    productData = []
+
+    for entry in serializer.data:
+        product_details = json.loads(entry["product_details"])
+        productData.extend(product_details)
+
+    return Response({
+        'data' : productData,
         'status' : status.HTTP_201_CREATED
     })

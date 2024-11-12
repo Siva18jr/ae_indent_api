@@ -20,5 +20,6 @@ urlpatterns = [
     path('sales/filter', views.getFilteredSales, name='filtered sales'),
     path('load/products/category', views.getOutletProductsByCategory, name='load products by category'),
     path('load/category', views.getOutletProductsCategory, name='load categories'),
-    path('sales/outlets/detail', views.getSalesDetail, name='sales detail')
+    path('sales/outlets/detail', views.getSalesDetail, name='sales detail'),
+    path('sales/outlets/detail/date', views.salesProductDetails, name='sales product detail')
 ]
