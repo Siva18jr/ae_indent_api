@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Outlets, Product, OutletProducts, SaleProducts, Users, RemainingProducts
+from .models import Outlets, Product, OutletProducts, SaleProducts, Users, RemainingProducts, OutletPending
 
 class OutletSerializer(ModelSerializer):
     
@@ -55,3 +55,10 @@ class OutletProductsCategorySerializer(ModelSerializer):
     class Meta:
         model = OutletProducts
         fields = ['product_category']
+
+
+class OutletPendingSerializer(ModelSerializer):
+
+    class Meta:
+        model = OutletPending
+        fields = '__all__'

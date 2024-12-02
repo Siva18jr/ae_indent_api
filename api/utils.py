@@ -1,5 +1,5 @@
-from .models import Outlets, Product, OutletProducts, SaleProducts, Users, RemainingProducts
-from .serializers import OutletSerializer, ProductSerializer, OutletProductsSerializer, SaleProductsSerializer, UserSerializer, CategorySerializer, RemainingProductsSerializer, OutletProductsCategorySerializer
+from .models import Outlets, Product, OutletProducts, SaleProducts, Users, RemainingProducts, OutletPending
+from .serializers import OutletSerializer, ProductSerializer, OutletProductsSerializer, SaleProductsSerializer, UserSerializer, CategorySerializer, RemainingProductsSerializer, OutletProductsCategorySerializer, OutletPendingSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from .emails import sendOtpViaEmail
@@ -21,6 +21,7 @@ def getOutletList(request):
         'data' : serializer.data,
         'status' : status.HTTP_201_CREATED
     })
+
 
 def getOutletDetail(request, pk):
     
@@ -72,7 +73,6 @@ def updateOutlet(request, pk):
             'message' : 'Outlet data updated'
         })
     else:
-        print(serializer.errors)
         return Response({
             'status' : False,
             'data' : serializer.data,
@@ -143,7 +143,6 @@ def updateProduct(request, pk):
             'message' : 'Product data updated'
         })
     else:
-        print(serializer.errors)
         return Response({
             'status' : False,
             'data' : serializer.data,
@@ -264,7 +263,6 @@ def updateOutletProduct(request, pk):
             'message' : 'Product data updated'
         })
     else:
-        print(serializer.errors)
         return Response({
             'status' : False,
             'data' : serializer.data,
@@ -341,6 +339,12 @@ def addSaleProduct(request):
             remaining = RemainingProducts.objects.get(id=item["id"])
             remainingProductsSerializer = RemainingProductsSerializer(instance=remaining, data=remainingProductData)
 
+            load = OutletProducts.objects.get(id=item["id"])
+            outletProductsSerializer = OutletProductsSerializer(instance=load, data=remainingProductData)
+
+            if outletProductsSerializer.is_valid():
+                outletProductsSerializer.save()
+
             if remainingProductsSerializer.is_valid():
                 remainingProductsSerializer.save()
 
@@ -350,72 +354,11 @@ def addSaleProduct(request):
             'message' : 'New Product Updated'
         })
     else:
-        print(serializer.errors)
         return Response({
             'status' : False,
             'data' : serializer.data,
             'message' : 'Product not Updated'
         })
-
-    # loadData = {
-    #     "id" : request.data['load_id'],
-    #     "product_id" : request.data['product_id'],
-    #     "shift":  request.data['shift'],
-    #     "image_url": request.data['image_url'],
-    #     "product_name":  request.data['name'],
-    #     "product_price":  request.data['price'],
-    #     "product_details":  request.data['details'],
-    #     "product_category":  request.data['category'],
-    #     "date":  request.data['load_date'],
-    #     "quantity":  request.data['load_quantity']
-    # }
-
-    # product = OutletProducts.objects.get(id=request.data['load_id'])
-    # loadSerializer = OutletProductsSerializer(instance=product, data=loadData)
-
-    # if loadSerializer.is_valid():
-    #     loadSerializer.save()
-
-    #     remainingProducts = RemainingProducts.objects.get(id=request.data['load_id'])
-    #     remainingProductsSerializer = OutletProductsSerializer(instance=remainingProducts, data=loadData)
-
-    #     if remainingProductsSerializer.is_valid():
-    #         remainingProductsSerializer.save()
-
-    #     data = {
-    #         "product_details" : request.data['product_details'],
-    #         "date":  request.data['date'],
-    #         "outlet_name":  request.data['outlet_name'],
-    #         "outlet_location":  request.data['outlet_location'],
-    #         "outlet_number":  request.data['outlet_number'],
-    #         "outlet_store_id":  request.data['outlet_store_id'],
-    #         "quantity":  request.data['quantity'],
-    #         "cash": request.data['cash'],
-    #         "balance" : request.data['balance']
-    #     }
-    
-    #     serializer = SaleProductsSerializer(data=data)
-
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response({
-    #             'status' : True,
-    #             'data' : serializer.data,
-    #             'message' : 'New Product Updated'
-    #         })
-    #     else:
-    #         return Response({
-    #             'status' : False,
-    #             'data' : serializer.data,
-    #             'message' : 'Product not Updated'
-    #         })
-        
-    # else:
-    #     return Response({
-    #         'status' : True,
-    #         'data' : serializer.data,
-    #         'message' : 'Product data updated'
-    #     })
     
 
 def updateSaleProduct(request, pk):
@@ -474,8 +417,6 @@ def addRemainingProduct(request):
 
 def updateRemainingProduct(request, pk):
 
-    # request.data.get('name')
-
     data = request.data
     sale = RemainingProducts.objects.get(id=pk)
     serializer = RemainingProductsSerializer(instance=sale, data=data)
@@ -488,7 +429,6 @@ def updateRemainingProduct(request, pk):
             'message' : 'Product data updated'
         })
     else:
-        print(serializer.errors)
         return Response({
             'status' : False,
             'data' : serializer.data,
@@ -611,7 +551,7 @@ def getSalesFilter(request):
     date = request.query_params.get('date')
     shift = request.query_params.get('shift')
 
-    sales = SaleProducts.objects.filter(date=date, shift= shift)
+    sales = SaleProducts.objects.filter(date=date, shift=shift)
     serializer = SaleProductsSerializer(instance=sales, many=True)
 
     return Response({
@@ -665,3 +605,63 @@ def getSalesProductDetails(request):
         'data' : productData,
         'status' : status.HTTP_201_CREATED
     })
+
+
+def updateOutletPending(request):
+
+    outlet = request.data['outlet']
+
+    if OutletPending.objects.filter(outlet=outlet).exists() is True:
+
+        pending = OutletPending.objects.get(outlet=outlet)
+        serializer = OutletPendingSerializer(instance=pending, data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                'status' : True,
+                'data' : serializer.data,
+                'message' : 'Outlet Pending Updated'
+            })
+        else:
+            return Response({
+                'status' : False,
+                'data' : { },
+                'message' : serializer.errors
+            })
+        
+    else:
+        serializer = OutletPendingSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                'status' : True,
+                'data' : serializer.data,
+                'message' : 'Outlet Pending Updated'
+            })
+        else:
+            return Response({
+                'status' : False,
+                'data' : { },
+                'message' : serializer.errors
+            })
+        
+
+def getOutletPending(request):
+
+    outlet = request.query_params.get('outlet')
+
+    if OutletPending.objects.filter(outlet=outlet).exists() == True:
+        
+        outlet = OutletPending.objects.get(outlet=outlet)
+        serializer = OutletPendingSerializer(instance=outlet, many=False)
+
+        return Response({
+            'data' : serializer.data,
+            'status' : status.HTTP_201_CREATED
+        })
+    else:
+        return Response({
+            'data' : { },
+            'status' : status.HTTP_201_CREATED
+        })

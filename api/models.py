@@ -99,3 +99,13 @@ class Users(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+class OutletPending(models.Model):
+    outlet = models.CharField(max_length=50, null=False, blank=False)
+    pending = models.CharField(max_length=50, null=False, blank=False)
+    updated = models.DateTimeField(auto_now=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True, blank=True)
+
+    def __str__(self):
+        return f"{self.outlet} {self.updated}"

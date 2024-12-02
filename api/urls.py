@@ -12,7 +12,7 @@ urlpatterns = [
     path('sales/products/', views.getSaleProducts, name='sale products'),
     path('saleproduct/<int:pk>/', views.getSaleproduct, name='sale product'),
     path('auth/', views.auth, name='auth'),
-    path('verify-email/', views.verification, name='emailverification'),
+    path('verify-email/', views.verification, name='email verification'),
     path('auth/otp', views.otp, name='otp'),
     path('categories/', views.getCategory, name='categories'),
     path('products/remaining', views.getRemainingProducts, name='remaining products'),
@@ -21,5 +21,7 @@ urlpatterns = [
     path('load/products/category', views.getOutletProductsByCategory, name='load products by category'),
     path('load/category', views.getOutletProductsCategory, name='load categories'),
     path('sales/outlets/detail', views.getSalesDetail, name='sales detail'),
-    path('sales/outlets/detail/date', views.salesProductDetails, name='sales product detail')
+    path('sales/outlets/detail/date', views.salesProductDetails, name='sales product detail'),
+    path('sales/outlets/detail', views.getSalesDetail, name='sales detail'),
+    path('outlet/pending', views.outletPending, name='outlet pending')
 ]

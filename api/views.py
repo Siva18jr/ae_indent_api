@@ -311,3 +311,13 @@ def salesProductDetails(request):
 
     if request.method == 'GET':
         return getSalesProductDetails(request)
+    
+
+@api_view(['GET', 'POST'])
+def outletPending(request):
+
+    if request.method == 'GET':
+        return getOutletPending(request)
+    
+    if request.method == 'POST':
+        return updateOutletPending(request)
