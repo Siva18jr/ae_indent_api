@@ -665,3 +665,57 @@ def getOutletPending(request):
             'data' : { },
             'status' : status.HTTP_201_CREATED
         })
+    
+
+def getEmployees(request):
+
+    users = Users.objects.filter(type='employee')
+    serializer = UserSerializer(instance=users, many=True)
+
+    return Response({
+        'data' : serializer.data,
+        'status' : status.HTTP_201_CREATED
+    })
+
+
+def getRecentEmployees(request):
+
+    users = Users.objects.filter(type='employee').order_by('created')[:5]
+    serializer = UserSerializer(instance=users, many=True)
+
+    return Response({
+        'data' : serializer.data,
+        'status' : status.HTTP_201_CREATED
+    })
+
+
+def updateEmployeeData(request, pk):
+
+    data = request.data
+    users = Users.objects.get(id=pk)
+    serializer = UserSerializer(instance=users, data=data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response({
+            'status' : True,
+            'data' : serializer.data,
+            'message' : 'Employee data updated'
+        })
+    else:
+        return Response({
+            'status' : False,
+            'data' : serializer.data,
+            'message' : 'Employee data not updated'
+        })
+    
+
+def deleteEmployee(request, pk):
+
+    user = Users.objects.get(id=pk)
+    user.delete()
+
+    return Response({
+        'status' : True,
+        'message' : 'Employee deleted!'
+    })

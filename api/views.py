@@ -1,154 +1,5 @@
-from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .utils import *
-from django.contrib.auth.models import User
-from rest_framework import generics
-
-@api_view(['GET'])
-def getRoutes(request):
-
-    routes = [
-        {
-            'Endpoint': '/outlets/',
-            'method': 'GET',
-            'body': None,
-            'description': 'Returns an array of outlets'
-        },
-        {
-            'Endpoint': '/outlet/id',
-            'method': 'GET',
-            'body': None,
-            'description': 'Returns a single outlet'
-        },
-        {
-            'Endpoint': '/outlets/',
-            'method': 'POST',
-            'body': {'body': ""},
-            'description': 'Creates new outlet with data sent in post request'
-        },
-        {
-            'Endpoint': '/outlets/id/',
-            'method': 'PUT',
-            'body': {'body': ""},
-            'description': 'Creates an existing outlet with data sent in post request'
-        },
-        {
-            'Endpoint': '/outlets/id/',
-            'method': 'DELETE',
-            'body': None,
-            'description': 'Deletes and exiting outlet'
-        },
-        {
-            'Endpoint': '/products/',
-            'method': 'GET',
-            'body': None,
-            'description': 'Returns an array of products'
-        },
-        {
-            'Endpoint': '/products/',
-            'method': 'POST',
-            'body': {'body': ""},
-            'description': 'Creates new product with data sent in post request'
-        },
-        {
-            'Endpoint': '/products/id/',
-            'method': 'DELETE',
-            'body': None,
-            'description': 'Deletes and exiting product'
-        },
-        {
-            'Endpoint': '/outletproducts/',
-            'method': 'GET',
-            'body': None,
-            'description': 'Returns an array of outlet products'
-        },
-        {
-            'Endpoint': '/outletproducts/',
-            'method': 'POST',
-            'body': {'body': ""},
-            'description': 'Creates new product for outlet with data sent in post request'
-        },
-        {
-            'Endpoint': '/outletproducts/id/',
-            'method': 'PUT',
-            'body': {'body': ""},
-            'description': 'Creates an existing outlet with data sent in post request'
-        },
-        {
-            'Endpoint': '/outletproducts/id/',
-            'method': 'DELETE',
-            'body': None,
-            'description': 'Deletes and exiting outlet product'
-        },
-        {
-            'Endpoint': '/saleproducts/',
-            'method': 'GET',
-            'body': None,
-            'description': 'Returns an array of sale products'
-        },
-        {
-            'Endpoint': '/saleproducts/',
-            'method': 'POST',
-            'body': {'body': ""},
-            'description': 'Creates new product for sales with data sent in post request'
-        },
-                {
-            'Endpoint': '/saleproducts/id/',
-            'method': 'PUT',
-            'body': {'body': ""},
-            'description': 'Creates an existing sale with data sent in post request'
-        },
-        {
-            'Endpoint': '/auth/',
-            'method': 'GET',
-            'body': {'parms': ""},
-            'description': 'Check the user'
-        },
-        {
-            'Endpoint': '/auth/',
-            'method': 'POST',
-            'body': {'body': ""},
-            'description': 'Creates an new account'
-        },
-        {
-            'Endpoint': '/verify/',
-            'method': 'GET',
-            'body': {'body': ""},
-            'description': 'Verify the email exists'
-        },
-        {
-            'Endpoint': '/otp/',
-            'method': 'GET',
-            'body': {'body': ""},
-            'description': 'Get the email otp sent to the user'
-        },
-        {
-            'Endpoint': '/categories/',
-            'method': 'GET',
-            'body': None,
-            'description': 'Returns an array of categories'
-        },
-        {
-            'Endpoint': '/remainingproducts/',
-            'method': 'GET',
-            'body': None,
-            'description': 'Returns an array of remainingproducts'
-        },
-        {
-            'Endpoint': '/remainingproducts/',
-            'method': 'POST',
-            'body': {'body': ""},
-            'description': 'Creates new remaining products with data sent in post request'
-        },
-                {
-            'Endpoint': '/remainingproducts/id/',
-            'method': 'PUT',
-            'body': {'body': ""},
-            'description': 'Creates an existing remaining products with data sent in post request'
-        }
-    ]
-    
-    return Response(routes)
 
 @api_view(['GET', 'POST'])
 def getOutlets(request):
@@ -321,3 +172,27 @@ def outletPending(request):
     
     if request.method == 'POST':
         return updateOutletPending(request)
+    
+
+@api_view(['GET'])
+def employees(request):
+
+    if request.method == 'GET':
+        return getEmployees(request)
+    
+
+@api_view(['GET'])
+def recentEmployees(request):
+
+    if request.method == 'GET':
+        return getRecentEmployees(request)
+    
+
+@api_view(['PUT', 'DELETE'])
+def employee(request, pk):
+
+    if request.method == 'PUT':
+        return updateEmployeeData(request, pk)
+    
+    if request.method == 'DELETE':
+        return deleteEmployee(request, pk)
