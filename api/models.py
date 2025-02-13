@@ -94,13 +94,21 @@ class Users(models.Model):
     name = models.CharField(max_length=50, null=False, blank=False)
     email = models.EmailField(max_length=70,blank=True, null= True, unique= True)
     password = models.CharField(max_length=50, null=False, blank=False)
-    profile_url = models.CharField(max_length=255, null=True, blank=False)
+    image = models.ImageField(null=True)
     type = models.CharField(max_length=50, null=True, default='employee')
     updated = models.DateTimeField(auto_now=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, blank=True)
 
     def __str__(self):
         return self.name
+    
+    @property
+    def imageUrl(self):
+        try:
+            url = self.image.url
+        except:
+            url = ''
+        return url
     
 
 class OutletPending(models.Model):
