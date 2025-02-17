@@ -439,6 +439,7 @@ def updateRemainingProduct(request, pk):
 def addUser(request):
 
     email = request.data['email']
+    empId = request.data['emp_id']
 
     if Users.objects.filter(email=email).exists() is True:
         return Response({
@@ -447,23 +448,30 @@ def addUser(request):
                 'message' : 'Email already exists'
         })
     else:
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({
-                'status' : True,
-                'data' : serializer.data,
-                'message' : 'Account registered'
-            })
-        else:
-            field_names = []
-            for field_name, field_errors in serializer.errors.items():
-                field_names.append(field_name)
+        if Users.objects.filter(emp_id=empId).exists() is True:
             return Response({
                 'status' : False,
                 'data' : { },
-                'message' : f'Invalid data in {field_names}'
+                'message' : 'Employee Id already exists'
             })
+        else:
+            serializer = UserSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({
+                    'status' : True,
+                    'data' : serializer.data,
+                    'message' : 'Account registered'
+                })
+            else:
+                field_names = []
+                for field_name, field_errors in serializer.errors.items():
+                    field_names.append(field_name)
+                return Response({
+                    'status' : False,
+                    'data' : { },
+                    'message' : f'Invalid data in {field_names}'
+                })
     
 
 def login(request):
