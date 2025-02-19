@@ -98,6 +98,7 @@ class Users(models.Model):
     type = models.CharField(max_length=50, null=True, default='employee')
     emp_id = models.CharField(max_length=50, null=True)
     mobile = models.CharField(max_length=50, null=True)
+    address = models.CharField(max_length=255, null=True)
     updated = models.DateTimeField(auto_now=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, blank=True)
 
