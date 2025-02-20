@@ -191,7 +191,8 @@ def addOutletProduct(request):
             'product_name': request.data['product_name'], 
             'product_price': request.data['product_price'], 
             'product_details': request.data['product_details'], 
-            'product_category': request.data['product_category'], 
+            'product_category': request.data['product_category'],
+            'emp_id': request.data['emp_id'], 
             'quantity': (int(serializer.data['quantity']) + int(request.data['quantity'])), 
             'date': date,
             'max_quantity' : (int(serializer.data['quantity']) + int(request.data['quantity']))
@@ -304,7 +305,8 @@ def addSaleProduct(request):
         "cash": request.data['cash'],
         "balance" : request.data['balance'],
         "total" : request.data['total'],
-        "shift" : request.data['shift']
+        "shift" : request.data['shift'],
+        "emp_id" : request.data['emp_id']
     }
     
     serializer = SaleProductsSerializer(data=data)
@@ -333,7 +335,8 @@ def addSaleProduct(request):
                 "date": item['date'],
                 "total_product_price" : remainingQuantity * int(item['product_price']),
                 "quantity": remainingQuantity,
-                "max_quantity" : item['quantity']
+                "max_quantity" : item['quantity'],
+                "emp_id" : item['emp_id']
             }
         
             remaining = RemainingProducts.objects.get(id=item["id"])

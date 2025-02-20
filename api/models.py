@@ -46,6 +46,7 @@ class OutletProducts(models.Model):
     date = models.CharField(max_length=50, null=False, blank=False)
     total_product_price = models.CharField(max_length=50, null=True, blank=False)
     max_quantity = models.CharField(max_length=20, null=True, blank=False, default='1')
+    emp_id = models.CharField(max_length=50, null=True)
     updated = models.DateTimeField(auto_now=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, blank=True)
 
@@ -65,6 +66,7 @@ class RemainingProducts(models.Model):
     total_product_price = models.CharField(max_length=50, null=True, blank=False)
     quantity = models.CharField(max_length=20, null=True, blank=False)
     max_quantity = models.CharField(max_length=20, null=True, blank=False, default='1')
+    emp_id = models.CharField(max_length=50, null=True)
     updated = models.DateTimeField(auto_now=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, blank=True)
 
@@ -83,6 +85,7 @@ class SaleProducts(models.Model):
     cash = models.CharField(max_length=50, null=True, blank=False)
     date = models.CharField(max_length=50, null=True, blank=False)
     balance = models.CharField(max_length=50, null=True, blank=False)
+    emp_id = models.CharField(max_length=50, null=True)
     updated = models.DateTimeField(auto_now=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, blank=True)
 
@@ -117,6 +120,7 @@ class Users(models.Model):
 class OutletPending(models.Model):
     outlet = models.CharField(max_length=50, null=False, blank=False)
     pending = models.CharField(max_length=50, null=False, blank=False)
+    emp_id = models.CharField(max_length=50, null=True)
     updated = models.DateTimeField(auto_now=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, blank=True)
 
