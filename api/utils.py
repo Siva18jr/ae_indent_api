@@ -240,8 +240,9 @@ def addOutletProduct(request):
 def getOutletProductsListByCategory(request):
 
     category = request.query_params.get('category')
+    empId = request.query_params.get('emp_id')
 
-    outlets = OutletProducts.objects.filter(product_category=category)
+    outlets = OutletProducts.objects.filter(product_category=category, emp_id=empId)
     serializer = OutletProductsSerializer(outlets, many=True)
 
     return Response({
@@ -389,8 +390,9 @@ def getRemainingProductsList(request):
 
     date = request.query_params.get('date')
     shift = request.query_params.get('shift')
+    empId = request.query_params.get('emp_id')
 
-    products = RemainingProducts.objects.filter(date=date, shift=shift)
+    products = RemainingProducts.objects.filter(date=date, shift=shift, emp_id=empId)
     serializer = RemainingProductsSerializer(instance=products, many=True)
 
     return Response({
@@ -561,8 +563,9 @@ def getSalesFilter(request):
 
     date = request.query_params.get('date')
     shift = request.query_params.get('shift')
+    empId = request.query_params.get('emp_id')
 
-    sales = SaleProducts.objects.filter(date=date, shift=shift)
+    sales = SaleProducts.objects.filter(date=date, shift=shift, emp_id=empId)
     serializer = SaleProductsSerializer(instance=sales, many=True)
 
     return Response({
@@ -587,8 +590,9 @@ def getOutletProductsCategories(request):
 def getSalesDetails(request):
 
     outlet = request.query_params.get('outlet')
+    empId = request.query_params.get('emp_id')
 
-    sales = SaleProducts.objects.filter(outlet_name=outlet)
+    sales = SaleProducts.objects.filter(outlet_name=outlet, emp_id=empId)
     serializer = SaleProductsSerializer(instance=sales, many=True)
 
     return Response({
@@ -661,10 +665,11 @@ def updateOutletPending(request):
 def getOutletPending(request):
 
     outlet = request.query_params.get('outlet')
+    empId = request.query_params.get('emp_id')
 
     if OutletPending.objects.filter(outlet=outlet).exists() == True:
         
-        outlet = OutletPending.objects.get(outlet=outlet)
+        outlet = OutletPending.objects.get(outlet=outlet, emp_id=empId)
         serializer = OutletPendingSerializer(instance=outlet, many=False)
 
         return Response({
